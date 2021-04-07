@@ -3,14 +3,15 @@ import json
 import pathlib
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Final, Union, Tuple, Text
-
-# A pretty loose type hint for json that comes back from Airtable
-AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
+from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text
+import source_mappings as sm
 
 
+# TODO: Figure out how to move these dataclass declarations to a separate file without mypy losing track of them
 @dataclass(frozen=True)
 class AirtableInput:
+    """Base classs for Airtable records"""
+
     airtable_created_time: str
     airtable_idno: str
 
@@ -41,7 +42,13 @@ class EntityRecord(AirtableInput):
     category: str = ""
 
 
-def load_from_file(fname: str) -> list[AIRTABLE_JSON]:
+# TYPE HINTING STUFF
+# A pretty loose type hint for json that comes back from Airtable
+AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
+
+AnyRecord = TypeVar("AnyRecord", AccessionRecord, EntityRecord)
+
+
 def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
     """
     Load data from a json file representing the contents of a table from an Airtable base to be migrated.
@@ -52,12 +59,16 @@ def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
     V4_SOURCE_DATA_DIR: Final = pathlib.Path().cwd() / "source_data"
 
     target_file: pathlib.Path = pathlib.Path.joinpath(V4_SOURCE_DATA_DIR, fname)
-    with pathlib.Path.open(target_file, "r") as fobject:
-        target_data: list[AIRTABLE_JSON] = json.loads(fobject.read())
+    target_data: list[AIRTABLE_JSON] = []
 
-    return target_data
+    try:
+        with pathlib.Path.open(target_file, "r") as fobject:
+            target_data = json.loads(fobject.read())
+    except FileNotFoundError as err:
+        print(err)
+
     # Grab all the keys actually used in records to check our mappings later
-    key_collector: dict[str, str] = defaultdict()
+    key_collector: DefaultDict[str, str] = defaultdict()
     for jsonObj in target_data:
         for k in jsonObj.keys():
             key_collector[k] = ""
@@ -68,6 +79,13 @@ def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
 
 
 def check_key_mappings(probe: Tuple[str, ...], mapping: dict[str, str]) -> None:
+    """
+    Check that there aren't keys in the source data that don't exist in our mapping.
+
+    :param probe: A tuple of extant keys found in the source data on import
+    :param mapping: A dictionary of source data keys to keys that match dataclasses
+    :return: None
+    """
     for test_key in probe:
         if test_key not in mapping:
             raise KeyError(
@@ -75,107 +93,52 @@ def check_key_mappings(probe: Tuple[str, ...], mapping: dict[str, str]) -> None:
             )
 
 
-# Refactor these later, brute force it for now
-def validate_accessions(fname: str) -> Tuple[AccessionRecord, ...]:
-    raw_json = load_from_file(fname)
-    raw_json, extant_keys = load_from_file(fname)
-    accessions: Tuple[AccessionRecord, ...] = ()
+def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ...]:
+    """
+    Create instances of dataclass from input data loaded from json returned by Airtable API.
 
-    accessions_column_mappings = {
-        "# Files": "file_count",
-        "Date of Donation": "donation_date",
-        "ID": "idno",
-        "Description": "description",
-        "Date of Donation": "donation_date",
-        "Legacy ID-UMD": "legacy_idno_umd",
-        "Donor Name (Form Entry)": "donor_name",
-        "Donor Name (Linked)": "linked_entity_array",
-        "Files": "file_array",
-        "ID": "idno",
-        "Legacy ID-UMD": "legacy_idno_umd",
-        "Donation Grouping Title": "title",
-        "# Files": "file_count",
-        "LDT Check (Temp)": "_ldt_check",
-        "airtable_createdTime": "airtable_created_time",
-        "airtable_id": "airtable_idno",
-    }
+    :param fname: String representing the name of the input file to process
+    :param fieldmap: A dictionary mapping keys in API data to internal set of keys
+    :return: A tuple of dataclass instances representing records
+    """
+
+    raw_json, extant_keys = load_from_file(fname)
+    validated_inputs: Tuple[AnyRecord, ...] = ()
+
+    validator_switch = {"accessions": AccessionRecord, "entities": EntityRecord}
+
+    # Matching on the names of the source data files to be processed so we need a check
+    try:
+        validator = validator_switch[fname.split(".")[0].lower().strip()]
+    except KeyError as err:
+        print(
+            "Unexpected input type: {}. Are you running against correct source data?".format(
+                err
+            )
+        )
+        raise
 
     try:
-        check_key_mappings(extant_keys, accessions_column_mappings)
+        check_key_mappings(extant_keys, fieldmap)
     except KeyError as err:
         print("Warning — {}. Key: {}".format(err.args[0], err.args[1]))
 
     for rec in raw_json:
         # Rename keys to match what dataclass expects
-        rec = {
-            accessions_column_mappings[name]: val
-            for name, val in rec.items()
-            if name in accessions_column_mappings
-        }
+        rec = {fieldmap[name]: val for name, val in rec.items() if name in fieldmap}
+
         try:
-            # TOFIX: Figure out why mypy complains about dictionary unpacking
-            accession = AccessionRecord(**rec)  # type: ignore
-            accessions += (accession,)
+            valid_input_record = validator(**rec)
+            validated_inputs += (valid_input_record,)
         except TypeError as e:
-            print(
-                "Error loading record {} from donor {}: {}".format(
-                    rec["airtable_idno"], rec["donor_name"], e
-                )
-            )
-            pass
+            print("Error loading record {}: {}".format(rec["airtable_idno"], e))
 
-    return accessions
-
-
-def validate_entities(fname: str) -> Tuple[EntityRecord, ...]:
-    raw_json = load_from_file(fname)
-    raw_json, extant_keys = load_from_file(fname)
-    entities: Tuple[EntityRecord, ...] = ()
-
-    entities_column_mappings = {
-        "Name": "name",
-        "Biography/History": "bio_hist",
-        "Notes": "notes",
-        "Entity Category": "category",
-        "Alternate Name": "alt_name",
-        "Address": "address",
-        "Date of Birth": "date_of_birth",
-        "Date of Death": "date_of_death",
-        "Latitude": "latitude",
-        "Authority Relationships": "auth_relations",
-        "Authority Relationships 2": "auth_relations_2",
-        "Linked Oral Histories (Interviewees)": "linked_to_oral_history",
-        "Linked Digital Objects (to Place)": "linked_to_place",
-        "Longitude": "longitude",
-        "Linked Digital Objects (Creators)": "linked_as_creator",
-        "Linked Digital Objects (as Recipients)": "linked_as_recipient",
-        "Linked Digital Objects (to Signatories)": "linked_as_signatory",
-        "Source Code": "lchp_source_code",
-        "Linked Digital Objects (Source)": "linked_as_source",
-        "Items": "linked_items_generic",
-        "Linked Items (EntityAsSubject)": "linked_items_array",
-        "airtable_createdTime": "airtable_created_time",
-        "airtable_id": "airtable_idno",
-    }
-
-    for rec in raw_json:
-        rec = {
-            entities_column_mappings[name]: val
-            for name, val in rec.items()
-            if name in entities_column_mappings
-        }
-        try:
-            entity = EntityRecord(**rec)  # type: ignore
-            entities += (entity,)
-        except TypeError as e:
-            print("Error loading record {}: {}".format(rec["name"], e))
-
-    return entities
+    return validated_inputs
 
 
 if __name__ == "__main__":
-    ACCESSIONS = validate_accessions("Accessions.json")
-    print("{} accessions processed without errors.\n".format(len(ACCESSIONS)))
+    accessions = validate_inputs("Accessions.json", sm.accessions_column_mappings)
+    print("{} accessions processed without errors.\n".format(len(accessions)))
 
-    ENTITIES = validate_entities("Entities.json")
-    print("{} entities processed without errors.\n".format(len(ENTITIES)))
+    entities = validate_inputs("Entities.json", sm.entities_column_mappings)
+    print("{} entities processed without errors.\n".format(len(entities)))
