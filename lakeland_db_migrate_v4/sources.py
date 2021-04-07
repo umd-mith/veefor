@@ -1,6 +1,7 @@
 """Handle input data coming from Airtable."""
 import json
 import pathlib
+from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Final, Union, Tuple, Text
 
@@ -38,6 +39,7 @@ class EntityRecord(AirtableInput):
 
 
 def load_from_file(fname: str) -> list[AIRTABLE_JSON]:
+def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
     """
     Load data from a json file representing the contents of a table from an Airtable base to be migrated.
 
@@ -51,11 +53,29 @@ def load_from_file(fname: str) -> list[AIRTABLE_JSON]:
         target_data: list[AIRTABLE_JSON] = json.loads(fobject.read())
 
     return target_data
+    # Grab all the keys actually used in records to check our mappings later
+    key_collector: dict[str, str] = defaultdict()
+    for jsonObj in target_data:
+        for k in jsonObj.keys():
+            key_collector[k] = ""
+
+    uniq_keys: Tuple[str, ...] = tuple(key_collector.keys())
+
+    return (target_data, uniq_keys)
+
+
+def check_key_mappings(probe: Tuple[str, ...], mapping: dict[str, str]) -> None:
+    for test_key in probe:
+        if test_key not in mapping:
+            raise KeyError(
+                "An extant key in input data not found in fields mapping", test_key
+            )
 
 
 # Refactor these later, brute force it for now
 def validate_accessions(fname: str) -> Tuple[AccessionRecord, ...]:
     raw_json = load_from_file(fname)
+    raw_json, extant_keys = load_from_file(fname)
     accessions: Tuple[AccessionRecord, ...] = ()
 
     accessions_column_mappings = {
@@ -69,6 +89,11 @@ def validate_accessions(fname: str) -> Tuple[AccessionRecord, ...]:
         "airtable_createdTime": "airtable_created_time",
         "airtable_id": "airtable_idno",
     }
+
+    try:
+        check_key_mappings(extant_keys, accessions_column_mappings)
+    except KeyError as err:
+        print("Warning — {}. Key: {}".format(err.args[0], err.args[1]))
 
     for rec in raw_json:
         # Rename keys to match what dataclass expects
@@ -94,6 +119,7 @@ def validate_accessions(fname: str) -> Tuple[AccessionRecord, ...]:
 
 def validate_entities(fname: str) -> Tuple[EntityRecord, ...]:
     raw_json = load_from_file(fname)
+    raw_json, extant_keys = load_from_file(fname)
     entities: Tuple[EntityRecord, ...] = ()
 
     entities_column_mappings = {
