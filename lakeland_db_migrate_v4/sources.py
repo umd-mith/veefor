@@ -88,7 +88,7 @@ def check_key_mappings(probe: Tuple[str, ...], mapping: dict[str, str]) -> None:
     """
     for test_key in probe:
         if test_key not in mapping:
-            raise KeyError(
+            raise RuntimeError(
                 "An extant key in input data not found in fields mapping", test_key
             )
 
