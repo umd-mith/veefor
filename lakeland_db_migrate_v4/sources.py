@@ -24,8 +24,11 @@ class AccessionRecord(AirtableInput):
     donor_name: str
     file_array: list[str]
     idno: str
+    linked_entity_array: list[str] = field(default_factory=list)
+    title: str = ""
     description: Text = ""
     legacy_idno_umd: str = ""
+    _ldt_check: str = ""
 
 
 @dataclass(frozen=True)
@@ -81,11 +84,18 @@ def validate_accessions(fname: str) -> Tuple[AccessionRecord, ...]:
     accessions_column_mappings = {
         "# Files": "file_count",
         "Date of Donation": "donation_date",
+        "ID": "idno",
         "Description": "description",
+        "Date of Donation": "donation_date",
+        "Legacy ID-UMD": "legacy_idno_umd",
         "Donor Name (Form Entry)": "donor_name",
+        "Donor Name (Linked)": "linked_entity_array",
         "Files": "file_array",
         "ID": "idno",
         "Legacy ID-UMD": "legacy_idno_umd",
+        "Donation Grouping Title": "title",
+        "# Files": "file_count",
+        "LDT Check (Temp)": "_ldt_check",
         "airtable_createdTime": "airtable_created_time",
         "airtable_id": "airtable_idno",
     }
