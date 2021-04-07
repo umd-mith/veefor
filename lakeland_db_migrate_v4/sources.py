@@ -33,6 +33,13 @@ class AccessionRecord(AirtableInput):
 
 
 @dataclass(frozen=True)
+class ItemRecord(AirtableInput):
+    """A record from the Items table in the *source* base."""
+
+    idno: str
+
+
+@dataclass(frozen=True)
 class EntityRecord(AirtableInput):
     """A record from the Entities table in the *source* base."""
 
@@ -105,7 +112,11 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
     raw_json, extant_keys = load_from_file(fname)
     validated_inputs: Tuple[AnyRecord, ...] = ()
 
-    validator_switch = {"accessions": AccessionRecord, "entities": EntityRecord}
+    validator_switch = {
+        "accessions": AccessionRecord,
+        "entities": EntityRecord,
+        "items": ItemRecord,
+    }
 
     # Matching on the names of the source data files to be processed so we need a check
     try:
