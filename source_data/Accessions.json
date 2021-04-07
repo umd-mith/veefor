@@ -19,6 +19,7 @@
     },
     {
         "# Files": 1,
+        "Date of Donation": "2021-04-06",
         "Description": "This donation grouping contains TIFF page scans and an access PDF of the entirety of the Lakeland Grant Binder. ",
         "Donation Grouping Title": "Lakeland Grant Binder",
         "Donor Name (Form Entry)": "Stephanie Sapienza",
@@ -4572,9 +4573,9 @@
     },
     {
         "# Files": 4,
-        "Date of Donation": "2021-03-05",
+        "Date of Donation": "2021-04-06",
         "Description": "This donation grouping includes four videos for interviews conducted at the 50th reunion of Lakeland High School, which were shot by Stephanie Sapienza (MITH) and conducted by Trevor Mu\u00f1oz (MITH).",
-        "Donation Grouping Title": "July 2018 Lakeland High School Reunion Interviews",
+        "Donation Grouping Title": "July 2018 Lakeland High School Reunion",
         "Donor Name (Form Entry)": "Stephanie Sapienza",
         "Files": [
             "recbVaOpVdIZhIQlF",
@@ -4582,7 +4583,7 @@
             "recXlzdfKoCEGsvLQ",
             "rec0NuMWa5WbabVz7"
         ],
-        "ID": "lhs-reunion-interviews-summer-2018",
+        "ID": "lhs-reunion-summer-2018",
         "airtable_createdTime": "2021-03-05T22:08:36.000Z",
         "airtable_id": "recWaSAys08yMmzR9"
     },
