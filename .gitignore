@@ -194,3 +194,4 @@ Thumbs.db #thumbnail cache on Windows
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 source_data/v4_source.db
+reports/*
