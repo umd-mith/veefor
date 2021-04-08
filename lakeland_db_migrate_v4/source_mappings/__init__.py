@@ -1,4 +1,4 @@
-accessions_source_column_mappings = {
+accessions_source_column_mappings: dict[str, str] = {
     "ID": "idno",
     "Description": "description",
     "Date of Donation": "donation_date",
@@ -13,7 +13,7 @@ accessions_source_column_mappings = {
     "airtable_id": "airtable_idno",
 }
 
-items_source_column_mappings = {
+items_source_column_mappings: dict[str, str] = {
     "ID": "idno",
     "Accession": "linked_accessions_array",
     "File Count": "file_count",
@@ -22,7 +22,7 @@ items_source_column_mappings = {
     "airtable_id": "airtable_idno",
 }
 
-entities_source_column_mappings = {
+entities_source_column_mappings: dict[str, str] = {
     "Name": "name",
     "Biography/History": "bio_hist",
     "Notes": "notes",
