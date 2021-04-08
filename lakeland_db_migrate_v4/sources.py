@@ -157,13 +157,3 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
             pass
 
     return validated_inputs
-
-
-if __name__ == "__main__":
-    accessions = validate_inputs(
-        "Accessions.json", sm.accessions_source_column_mappings
-    )
-    print("{} accessions processed without errors.\n".format(len(accessions)))
-
-    entities = validate_inputs("Entities.json", sm.entities_source_column_mappings)
-    print("{} entities processed without errors.\n".format(len(entities)))
