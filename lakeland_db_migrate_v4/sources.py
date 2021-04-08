@@ -141,7 +141,7 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
         rec = {fieldmap[name]: val for name, val in rec.items() if name in fieldmap}
 
         try:
-            valid_input_record = validator(**rec)
+            valid_input_record: AnyRecord = validator(**rec)
             validated_inputs += (valid_input_record,)
         except TypeError as e:
             print("Error loading record {}: {}".format(rec["airtable_idno"], e))
