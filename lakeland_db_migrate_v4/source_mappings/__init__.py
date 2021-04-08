@@ -1,3 +1,4 @@
+"""Map object keys we receive to internal keys."""
 accessions_source_column_mappings: dict[str, str] = {
     "ID": "idno",
     "Description": "description",
