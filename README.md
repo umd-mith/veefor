@@ -11,3 +11,5 @@ This requires [poetry](https://python-poetry.org/) for now
 3. `poetry build`
 4. In a virtual environment of your choice: `pip install path/to/dist/gzip`
 5. Do what you're gonna do
+
+You'll probably need a copy of the source data from Airtable to work with.
