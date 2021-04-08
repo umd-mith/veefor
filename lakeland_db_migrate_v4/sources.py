@@ -45,6 +45,8 @@ class EntitySourceRecord(AirtableSourceRecord):
 
     name: str
     linked_items_array: list[str] = field(default_factory=list)
+    address: str = ""
+    alt_name: str = ""
     bio_hist: str = ""
     category: str = ""
 
