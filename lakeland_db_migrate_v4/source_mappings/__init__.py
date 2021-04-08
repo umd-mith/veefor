@@ -1,4 +1,4 @@
-accessions_column_mappings = {
+accessions_source_column_mappings = {
     "ID": "idno",
     "Description": "description",
     "Date of Donation": "donation_date",
@@ -13,7 +13,16 @@ accessions_column_mappings = {
     "airtable_id": "airtable_idno",
 }
 
-entities_column_mappings = {
+items_source_column_mappings = {
+    "ID": "idno",
+    "Accession": "linked_accessions_array",
+    "File Count": "file_count",
+    "Files": "linked_files_array",
+    "airtable_createdTime": "airtable_created_time",
+    "airtable_id": "airtable_idno",
+}
+
+entities_source_column_mappings = {
     "Name": "name",
     "Biography/History": "bio_hist",
     "Notes": "notes",

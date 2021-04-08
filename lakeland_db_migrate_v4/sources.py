@@ -9,7 +9,7 @@ import source_mappings as sm
 
 # TODO: Figure out how to move these dataclass declarations to a separate file without mypy losing track of them
 @dataclass(frozen=True)
-class AirtableInput:
+class AirtableSourceRecord:
     """Base classs for Airtable records"""
 
     airtable_created_time: str
@@ -17,7 +17,7 @@ class AirtableInput:
 
 
 @dataclass(frozen=True)
-class AccessionRecord(AirtableInput):
+class AccessionSourceRecord(AirtableSourceRecord):
     """An record from the Accessions table in the *source* base."""
 
     file_count: int
@@ -33,14 +33,14 @@ class AccessionRecord(AirtableInput):
 
 
 @dataclass(frozen=True)
-class ItemRecord(AirtableInput):
+class ItemSourceRecord(AirtableSourceRecord):
     """A record from the Items table in the *source* base."""
 
     idno: str
 
 
 @dataclass(frozen=True)
-class EntityRecord(AirtableInput):
+class EntitySourceRecord(AirtableSourceRecord):
     """A record from the Entities table in the *source* base."""
 
     name: str
@@ -53,7 +53,7 @@ class EntityRecord(AirtableInput):
 # A pretty loose type hint for json that comes back from Airtable
 AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
 
-AnyRecord = TypeVar("AnyRecord", AccessionRecord, EntityRecord)
+AnyRecord = TypeVar("AnyRecord", AccessionSourceRecord, EntitySourceRecord)
 
 
 def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
@@ -113,9 +113,9 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
     validated_inputs: Tuple[AnyRecord, ...] = ()
 
     validator_switch = {
-        "accessions": AccessionRecord,
-        "entities": EntityRecord,
-        "items": ItemRecord,
+        "accessions": AccessionSourceRecord,
+        "entities": EntitySourceRecord,
+        "items": ItemSourceRecord,
     }
 
     # Matching on the names of the source data files to be processed so we need a check
@@ -148,8 +148,10 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
 
 
 if __name__ == "__main__":
-    accessions = validate_inputs("Accessions.json", sm.accessions_column_mappings)
+    accessions = validate_inputs(
+        "Accessions.json", sm.accessions_source_column_mappings
+    )
     print("{} accessions processed without errors.\n".format(len(accessions)))
 
-    entities = validate_inputs("Entities.json", sm.entities_column_mappings)
+    entities = validate_inputs("Entities.json", sm.entities_source_column_mappings)
     print("{} entities processed without errors.\n".format(len(entities)))
