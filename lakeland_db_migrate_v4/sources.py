@@ -11,7 +11,7 @@ import source_mappings as sm
 # to a separate file without mypy losing track of them
 @dataclass(frozen=True)
 class AirtableSourceRecord:
-    """Base classs for Airtable records"""
+    """Base classs for Airtable records."""
 
     airtable_created_time: str
     airtable_idno: str
@@ -111,7 +111,6 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
     :param fieldmap: A dictionary mapping keys in API data to internal set of keys
     :return: A tuple of dataclass instances representing records
     """
-
     raw_json, extant_keys = load_from_file(fname)
     validated_inputs: Tuple[AnyRecord, ...] = ()
 
