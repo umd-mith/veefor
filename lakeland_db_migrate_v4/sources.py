@@ -7,7 +7,8 @@ from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text
 import source_mappings as sm
 
 
-# TODO: Figure out how to move these dataclass declarations to a separate file without mypy losing track of them
+# TODO: Figure out how to move these dataclass declarations
+# to a separate file without mypy losing track of them
 @dataclass(frozen=True)
 class AirtableSourceRecord:
     """Base classs for Airtable records"""
@@ -137,7 +138,7 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
         print("Warning — {}. Key: {}".format(err.args[0], err.args[1]))
 
     for rec in raw_json:
-        # Rename keys to match what dataclass expects
+        # Rename keys we get from Airtable to match what dataclass init expects
         rec = {fieldmap[name]: val for name, val in rec.items() if name in fieldmap}
 
         try:
