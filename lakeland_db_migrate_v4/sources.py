@@ -4,7 +4,6 @@ import pathlib
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text
-import source_mappings as sm
 
 
 # TODO: Figure out how to move these dataclass declarations
