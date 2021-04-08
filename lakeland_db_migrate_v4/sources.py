@@ -134,8 +134,9 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
 
     try:
         check_key_mappings(extant_keys, fieldmap)
-    except KeyError as err:
+    except RuntimeError as err:
         print("Warning — {}. Key: {}".format(err.args[0], err.args[1]))
+        raise
 
     for rec in raw_json:
         # Rename keys we get from Airtable to match what dataclass init expects
@@ -146,6 +147,7 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
             validated_inputs += (valid_input_record,)
         except TypeError as e:
             print("Error loading record {}: {}".format(rec["airtable_idno"], e))
+            pass
 
     return validated_inputs
 
