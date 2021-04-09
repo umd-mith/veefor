@@ -5155,6 +5155,9 @@
     {
         "Biography/History": "Faculty (Professor) in American Studies",
         "Entity Category": "Person (LCHP Team)",
+        "Linked Digital Objects (Source)": [
+            "rec8uHmphoo0iXkS4"
+        ],
         "Linked Items (EntityAsSubject)": [
             "recd1HaiwGu0pL4Og"
         ],
@@ -6228,6 +6231,9 @@
         "Linked Files (as Source)": [
             "rec1MeZppDQX2fT89",
             "recCLUVP1PDq85qJW"
+        ],
+        "Linked Oral Histories (Interviewees)": [
+            "rec8uHmphoo0iXkS4"
         ],
         "Name": "Shirley Tyner Pratt",
         "airtable_createdTime": "2020-10-28T20:33:22.000Z",
