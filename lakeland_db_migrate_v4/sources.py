@@ -2,7 +2,7 @@
 import json
 import pathlib
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass, InitVar, field
 from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text
 
 
@@ -38,13 +38,24 @@ class FileSourceRecord(AirtableSourceRecord):
 
     idno: str
     linked_accession: str
-    file_path: str = ""
-    virtual_location: str = ""
     legacy_idno_lchp: str = ""
     legacy_checksum: str = ""
     file_format: str = ""
     part_of_item: str = ""
+    virtual_location: str = ""
+    file_path: InitVar[str] = ""
+    file_path_array: list[str] = field(init=False)
     linked_entity_as_source: list[str] = field(default_factory=list)
+
+    def __post_init__(self, file_path: str) -> None:
+        """Handle the case of more than one file path."""
+        if file_path is not None:
+            if file_path == "":
+                object.__setattr__(self, "file_path_array", [])
+            if file_path == "NO FILE":
+                object.__setattr__(self, "file_path_array", [])
+            else:
+                object.__setattr__(self, "file_path_array", file_path.split(","))
 
 
 @dataclass(frozen=True)
