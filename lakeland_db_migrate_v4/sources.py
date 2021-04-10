@@ -37,6 +37,28 @@ class ItemSourceRecord(AirtableSourceRecord):
     """A record from the Items table in the *source* base."""
 
     idno: str
+    legacy_idno_umd: str
+    linked_files_array: list[str]
+    title: str = ""
+    description: str = ""
+    created_date: str = ""
+    obj_type: str = ""
+    category: str = ""
+    collection: str = ""
+    lakeland_book_chapter: str = ""
+    lakeland_book_page: str = ""
+    legacy_idno_lchp: str = ""
+    linked_entity_as_creator: list[str] = field(default_factory=list)
+    linked_entity_source: list[str] = field(default_factory=list)
+    linked_people: list[str] = field(default_factory=list)
+    linked_places_orgs: list[str] = field(default_factory=list)
+    linked_subjects: list[str] = field(default_factory=list)
+    linked_entity_interviewers: list[str] = field(default_factory=list)
+    linked_entity_interviewees: list[str] = field(default_factory=list)
+    interview_summary_attachment: list[str] = field(default_factory=list)
+    lakeland_book: bool = field(default=False)
+    lakeland_video: bool = field(default=False)
+    remove: bool = field(default=False)
 
 
 @dataclass(frozen=True)
@@ -73,12 +95,30 @@ class SubjectSourceRecord(AirtableSourceRecord):
     category: str = ""
 
 
+@dataclass(frozen=True)
+class EntityRelationshipSourceRecord(AirtableSourceRecord):
+    """A record from the Relationships table in the *source* base."""
+
+    name: str
+    entity_1: str
+    entity_2: str
+    relation_type: str
+    start_date: str = ""
+    end_date: str = ""
+    notes: str = ""
+
+
 # TYPE HINTING STUFF
 # A pretty loose type hint for json that comes back from Airtable
 AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
 
 AnyRecord = TypeVar(
-    "AnyRecord", AccessionSourceRecord, EntitySourceRecord, SubjectSourceRecord
+    "AnyRecord",
+    AccessionSourceRecord,
+    EntitySourceRecord,
+    ItemSourceRecord,
+    SubjectSourceRecord,
+    EntityRelationshipSourceRecord,
 )
 
 
@@ -140,9 +180,11 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
 
     validator_switch = {
         "accessions": AccessionSourceRecord,
+        "items": ItemSourceRecord,
         "entities": EntitySourceRecord,
         "items": ItemSourceRecord,
         "subjects": SubjectSourceRecord,
+        "relationships": EntityRelationshipSourceRecord,
     }
 
     # Matching on the names of the source data files to be processed so we need a check
@@ -174,10 +216,14 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
             cls_name = validator.__name__
             if cls_name == "AccessionSourceRecord":
                 hint = "— (Donor) {}".format(rec["donor_name"])
+            if cls_name == "ItemSourceRecord":
+                hint = "— (Item) {}".format(rec["idno"])
             if cls_name == "EntitySourceRecord":
                 hint = "— (Entity) {}".format(rec["name"])
             if cls_name == "SubjectSourceRecord":
                 hint = "— (Subject) {}".format(rec["name"])
+            if cls_name == "EntityRelationshipSourceRecord":
+                hint = "— (Relationship) {}{}".format(rec["entity_1"], rec["name"])
             else:
                 pass
             print(
