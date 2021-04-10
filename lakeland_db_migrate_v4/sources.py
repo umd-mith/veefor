@@ -33,6 +33,21 @@ class AccessionSourceRecord(AirtableSourceRecord):
 
 
 @dataclass(frozen=True)
+class FileSourceRecord(AirtableSourceRecord):
+    """A record from the Files table in the *source* base."""
+
+    idno: str
+    linked_accession: str
+    file_path: str = ""
+    virtual_location: str = ""
+    legacy_idno_lchp: str = ""
+    legacy_checksum: str = ""
+    file_format: str = ""
+    part_of_item: str = ""
+    linked_entity_as_source: list[str] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
 class ItemSourceRecord(AirtableSourceRecord):
     """A record from the Items table in the *source* base."""
 
@@ -115,6 +130,7 @@ AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
 AnyRecord = TypeVar(
     "AnyRecord",
     AccessionSourceRecord,
+    FileSourceRecord,
     EntitySourceRecord,
     ItemSourceRecord,
     SubjectSourceRecord,
@@ -180,6 +196,7 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
 
     validator_switch = {
         "accessions": AccessionSourceRecord,
+        "files": FileSourceRecord,
         "items": ItemSourceRecord,
         "entities": EntitySourceRecord,
         "items": ItemSourceRecord,
@@ -216,6 +233,8 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
             cls_name = validator.__name__
             if cls_name == "AccessionSourceRecord":
                 hint = "— (Donor) {}".format(rec["donor_name"])
+            if cls_name == "FileSourceRecord":
+                hint = "— (File) {}".format(rec["idno"])
             if cls_name == "ItemSourceRecord":
                 hint = "— (Item) {}".format(rec["idno"])
             if cls_name == "EntitySourceRecord":

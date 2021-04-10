@@ -14,6 +14,20 @@ accessions_source_column_mappings: dict[str, str] = {
     "airtable_id": "airtable_idno",
 }
 
+files_source_column_mappings: dict[str, str] = {
+    "ID": "idno",
+    "Format": "file_format",
+    "Part of Item": "part_of_item",
+    "Virtual Location": "virtual_location",
+    "File Path": "file_path",
+    "Source (Provenance)": "linked_entity_as_source",
+    "Legacy ID-LCHP": "legacy_idno_lchp",
+    "Checksum": "legacy_checksum",
+    "Part of Accession": "linked_accession",
+    "airtable_createdTime": "airtable_created_time",
+    "airtable_id": "airtable_idno",
+}
+
 items_source_column_mappings: dict[str, str] = {
     "ID": "idno",
     "Accession": "linked_accessions_array",
