@@ -7460,6 +7460,15 @@
         "airtable_id": "recVXOcVHpDeeS1Dj"
     },
     {
+        "Entity Category": "Person (LCHP Team)",
+        "Linked Oral Histories (as Interviewer)": [
+            "rec8uHmphoo0iXkS4"
+        ],
+        "Name": "Brian Cuvo",
+        "airtable_createdTime": "2021-04-09T18:54:12.000Z",
+        "airtable_id": "recVZCmaIn0uy8Hzo"
+    },
+    {
         "Entity Category": "Person",
         "Linked Items (EntityAsSubject)": [
             "recsXKvRgYwCTKqVH",
@@ -9853,7 +9862,8 @@
         "Entity Category": "Person (LCHP Team)",
         "Linked Oral Histories (as Interviewer)": [
             "recuPREIb2vjII37P",
-            "recdnM3MidkSC08CE"
+            "recdnM3MidkSC08CE",
+            "rec8uHmphoo0iXkS4"
         ],
         "Name": "Gregory McCampbell",
         "airtable_createdTime": "2020-12-18T19:28:51.000Z",
@@ -13868,7 +13878,8 @@
         "Entity Category": "Person (LCHP Team)",
         "Linked Oral Histories (as Interviewer)": [
             "recPT75oarAXdiwAa",
-            "recuQETC7PutlDh9a"
+            "recuQETC7PutlDh9a",
+            "rec8uHmphoo0iXkS4"
         ],
         "Name": "Jennie Chaplin",
         "airtable_createdTime": "2020-12-18T19:28:51.000Z",
