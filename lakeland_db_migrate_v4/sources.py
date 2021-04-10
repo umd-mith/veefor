@@ -45,10 +45,23 @@ class EntitySourceRecord(AirtableSourceRecord):
 
     name: str
     linked_items_array: list[str] = field(default_factory=list)
+    linked_as_source: list[str] = field(default_factory=list)
+    linked_as_interviewer: list[str] = field(default_factory=list)
+    linked_as_interviewee: list[str] = field(default_factory=list)
+    linked_place_as_subject: list[str] = field(default_factory=list)
+    linked_to_item_as_creator: list[str] = field(default_factory=list)
+    linked_to_files_as_source: list[str] = field(default_factory=list)
+    linked_to_acc_as_donor: list[str] = field(default_factory=list)
+    auth_relations: list[str] = field(default_factory=list)
+    auth_relations_2: list[str] = field(default_factory=list)
     address: str = ""
+    latitude: str = ""
+    longitude: str = ""
     alt_name: str = ""
     bio_hist: str = ""
+    notes: str = ""
     category: str = ""
+    lchp_source_code: str = ""
 
 
 # TYPE HINTING STUFF
