@@ -64,11 +64,22 @@ class EntitySourceRecord(AirtableSourceRecord):
     lchp_source_code: str = ""
 
 
+@dataclass(frozen=True)
+class SubjectSourceRecord(AirtableSourceRecord):
+    """A record from the Subjects table in the *source* base."""
+
+    name: str
+    linked_items_array: list[str]
+    category: str = ""
+
+
 # TYPE HINTING STUFF
 # A pretty loose type hint for json that comes back from Airtable
 AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
 
-AnyRecord = TypeVar("AnyRecord", AccessionSourceRecord, EntitySourceRecord)
+AnyRecord = TypeVar(
+    "AnyRecord", AccessionSourceRecord, EntitySourceRecord, SubjectSourceRecord
+)
 
 
 # LIBRARY FUNCTIONS
@@ -131,6 +142,7 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
         "accessions": AccessionSourceRecord,
         "entities": EntitySourceRecord,
         "items": ItemSourceRecord,
+        "subjects": SubjectSourceRecord,
     }
 
     # Matching on the names of the source data files to be processed so we need a check

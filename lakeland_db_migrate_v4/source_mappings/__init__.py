@@ -53,3 +53,11 @@ entities_source_column_mappings: dict[str, str] = {
     "airtable_createdTime": "airtable_created_time",
     "airtable_id": "airtable_idno",
 }
+
+subjects_source_column_mappings: dict[str, str] = {
+    "Name": "name",
+    "Subject Category": "category",
+    "Items": "linked_items_array",
+    "airtable_createdTime": "airtable_created_time",
+    "airtable_id": "airtable_idno",
+}
