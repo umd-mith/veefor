@@ -58,6 +58,7 @@ AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
 AnyRecord = TypeVar("AnyRecord", AccessionSourceRecord, EntitySourceRecord)
 
 
+# LIBRARY FUNCTIONS
 def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
     """
     Load data from a json file representing the contents of a table from an Airtable base to be migrated.
