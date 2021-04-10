@@ -159,12 +159,15 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
             validated_inputs += (valid_input_record,)
         except TypeError as e:
             hint: str = ""
-            if isinstance(valid_input_record, AccessionSourceRecord):
-                hint = "— (Donor) {}".format(valid_input_record.donor_name)
-            elif isinstance(valid_input_record, EntitySourceRecord):
-                hint = "— (Entity) {}".format(valid_input_record.name)
+            cls_name = validator.__name__
+            if cls_name == "AccessionSourceRecord":
+                hint = "— (Donor) {}".format(rec["donor_name"])
+            if cls_name == "EntitySourceRecord":
+                hint = "— (Entity) {}".format(rec["name"])
+            if cls_name == "SubjectSourceRecord":
+                hint = "— (Subject) {}".format(rec["name"])
             else:
-                hint = ""
+                pass
             print(
                 "Error loading record {} {}: {}".format(rec["airtable_idno"], hint, e)
             )
