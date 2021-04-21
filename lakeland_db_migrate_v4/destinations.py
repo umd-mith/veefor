@@ -8,6 +8,13 @@ from ulid import ULID
 class V4BaseRecord:
     """A shared base class for records in the destination data model."""
 
+    idno: ULID
+
+
+@dataclass
+class MigratedRecord(V4BaseRecord):
+    """A shared base class for records in the destination data model."""
+
     airtable_created_time: InitVar[str]
     airtable_idno: InitVar[str]
     source_record_hash: int = field(init=False)
@@ -18,10 +25,9 @@ class V4BaseRecord:
 
 
 @dataclass
-class DonationGroupingRecord(V4BaseRecord):
+class DonationGroupingRecord(MigratedRecord):
     """A representation of a DonationGrouping in the destination data model."""
 
-    idno: str
     donor_name: str
     donation_date: str
     donor_email: str
@@ -34,10 +40,9 @@ class DonationGroupingRecord(V4BaseRecord):
 
 
 @dataclass
-class FileRecord(V4BaseRecord):
+class FileRecord(MigratedRecord):
     """A representation of a File in the destination data model."""
 
-    idno: str
     donation_grouping: str
     item: str
     created_time: str
@@ -48,12 +53,91 @@ class FileRecord(V4BaseRecord):
 
 
 @dataclass
-class ItemRecord(V4BaseRecord):
+class ItemRecord(MigratedRecord):
     """A representation of an Item in the destination data model."""
 
-    idno: str
     title: str
     description: str
     creation_date: str
     creation_year: int
     item_type: str
+
+
+@dataclass
+class ItemLegacyInfoRecord(V4BaseRecord):
+    """A representation of legacy ids about Entities in the destination data model."""
+
+    linked_item: ItemRecord
+    legacy_idno_umd: str = ""
+    legacy_ldt_image_idno: str = ""
+    legacy_associated_filenames: list[str] = field(default_factory=list)
+
+
+@dataclass
+class ItemAdminRecord(V4BaseRecord):
+    """A representation of AdminData about Entities in the destination data model."""
+
+    linked_item: ItemRecord
+    lakeland_book: bool = field(default=False)
+    lakeland_book_chapter: str = ""
+    lakeland_book_page: int = field(default_factory=int)
+    lakeland_video: bool = field(default=False)
+    remove: bool = field(default=False)
+
+
+@dataclass
+class SubjectRecord(MigratedRecord):
+    """A representation of a Subject in the destination data model."""
+
+    name: str
+    type: str
+
+
+@dataclass
+class EntityRecord(MigratedRecord):
+    """A representation of an Entity in the destination data model."""
+
+    name: str
+    entity_type: str
+    date_of_birth: str
+    date_of_death: str
+    bio_hist: Text
+    legacy_idno_lchp: str
+    create_landing_page: bool = field(default=False)
+    lakeland_video: bool = field(default=False)
+    remove: bool = field(default=False)
+
+
+@dataclass
+class LocationRecord(V4BaseRecord):
+    """A representation of a Location in the destination data model."""
+
+    name: str
+    linked_entities: list[EntityRecord]
+    address: str
+    latitude: float
+    longitude: float
+
+
+@dataclass
+class PersonAdminRecord(V4BaseRecord):
+    """A representation of AdminData about Entities in the destination data model."""
+
+    name: str
+    linked_entities: list[EntityRecord]
+    lchp_team_member: bool = field(default=False)
+    title: str = ""
+    affiliation: str = ""
+    email_address: str = ""
+
+
+@dataclass
+class EntityRelationshipRecord(MigratedRecord):
+    """A representation of a pairwise relationship between Entities in the destination data model."""
+
+    name: str
+    subject_entity: EntityRecord
+    object_entity: EntityRecord
+    relationship_predicate: str
+    relationship_start_date: str = ""
+    relationship_end_date: str = ""
