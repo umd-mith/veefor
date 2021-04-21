@@ -65,6 +65,15 @@ class ItemRecord(MigratedRecord):
     creation_date: str
     creation_year: int
     item_type: str
+    linked_entities: list[EntityRecord] = field(default_factory=list)
+    linked_entities_as_donors: list[EntityRecord] = field(default_factory=list)
+    linked_entities_as_sources: list[EntityRecord] = field(default_factory=list)
+    linked_entities_as_interviewers: list[EntityRecord] = field(default_factory=list)
+    linked_entities_as_interviewees: list[EntityRecord] = field(default_factory=list)
+    linked_subjects: list[SubjectRecord] = field(default_factory=list)
+    duration: str = ""
+    interview_summary_attachment: AIRTABLE_ATTACHMENTS = field(default_factory=list)
+    interview_transcript_attachment: AIRTABLE_ATTACHMENTS = field(default_factory=list)
 
 
 @dataclass
