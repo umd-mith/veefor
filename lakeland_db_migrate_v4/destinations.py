@@ -1,7 +1,7 @@
 """Map data to v4 data model."""
-import hashlib
 from dataclasses import dataclass, InitVar, field
 from typing import Text, Tuple
+from ulid import ULID
 
 
 @dataclass
