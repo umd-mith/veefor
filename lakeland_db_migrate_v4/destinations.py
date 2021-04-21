@@ -23,9 +23,35 @@ class DonationGroupingRecord(V4BaseRecord):
 
     idno: str
     donor_name: str
-    title: str
     donation_date: str
     donor_email: str
     donor_phone: str
     description: Text
+    title: str = ""
     donation_consent: bool = field(default=False)
+
+
+@dataclass
+class FileRecord(V4BaseRecord):
+    """A representation of a File in the destination data model."""
+
+    idno: str
+    donation_grouping: str
+    item: str
+    created_time: str
+    file_format: str
+    location: str
+    sha256_hexdigest: str
+    size: int
+
+
+@dataclass
+class ItemRecord(V4BaseRecord):
+    """A representation of an Item in the destination data model."""
+
+    idno: str
+    title: str
+    description: str
+    creation_date: str
+    creation_year: int
+    item_type: str
