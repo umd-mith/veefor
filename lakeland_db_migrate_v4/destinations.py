@@ -1,7 +1,11 @@
 """Map data to v4 data model."""
 from dataclasses import dataclass, InitVar, field
-from typing import Text, Tuple
+from typing import Text, Tuple, Union
 from ulid import ULID
+
+# TYPE HINTING HELPERS
+AIRTABLE_ATTACHMENTS_THUMBNAILS = dict[str, Union[int, str]]
+AIRTABLE_ATTACHMENTS = list[dict[str, Union[str, int, AIRTABLE_ATTACHMENTS_THUMBNAILS]]]
 
 
 @dataclass
