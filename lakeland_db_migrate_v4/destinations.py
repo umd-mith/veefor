@@ -3,6 +3,19 @@ from dataclasses import dataclass, InitVar, field
 from typing import Text, Tuple, Union
 from ulid import ULID
 
+__all__ = [
+    "DonationGroupingRecord",
+    "FileRecord",
+    "ItemRecord",
+    "ItemLegacyInfoRecord",
+    "ItemAdminRecord",
+    "SubjectRecord",
+    "EntityRecord",
+    "LocationRecord",
+    "PersonAdminRecord",
+    "EntityRelationshipRecord",
+]
+
 # TYPE HINTING HELPERS
 AIRTABLE_ATTACHMENTS_THUMBNAILS = dict[str, Union[int, str]]
 AIRTABLE_ATTACHMENTS = list[dict[str, Union[str, int, AIRTABLE_ATTACHMENTS_THUMBNAILS]]]
@@ -57,6 +70,29 @@ class FileRecord(MigratedRecord):
 
 
 @dataclass
+class EntityRecord(MigratedRecord):
+    """A representation of an Entity in the destination data model."""
+
+    name: str
+    entity_type: str
+    date_of_birth: str
+    date_of_death: str
+    bio_hist: Text
+    legacy_idno_lchp: str
+    create_landing_page: bool = field(default=False)
+    lakeland_video: bool = field(default=False)
+    remove: bool = field(default=False)
+
+
+@dataclass
+class SubjectRecord(MigratedRecord):
+    """A representation of a Subject in the destination data model."""
+
+    name: str
+    type: str
+
+
+@dataclass
 class ItemRecord(MigratedRecord):
     """A representation of an Item in the destination data model."""
 
@@ -94,29 +130,6 @@ class ItemAdminRecord(V4BaseRecord):
     lakeland_book: bool = field(default=False)
     lakeland_book_chapter: str = ""
     lakeland_book_page: int = field(default_factory=int)
-    lakeland_video: bool = field(default=False)
-    remove: bool = field(default=False)
-
-
-@dataclass
-class SubjectRecord(MigratedRecord):
-    """A representation of a Subject in the destination data model."""
-
-    name: str
-    type: str
-
-
-@dataclass
-class EntityRecord(MigratedRecord):
-    """A representation of an Entity in the destination data model."""
-
-    name: str
-    entity_type: str
-    date_of_birth: str
-    date_of_death: str
-    bio_hist: Text
-    legacy_idno_lchp: str
-    create_landing_page: bool = field(default=False)
     lakeland_video: bool = field(default=False)
     remove: bool = field(default=False)
 
