@@ -27,7 +27,9 @@ class DonationGroupingRecord(V4BaseRecord):
     donor_email: str
     donor_phone: str
     description: Text
+    _v3_files_array: list[str] = field(repr=False, hash=False)
     title: str = ""
+    legacy_idno: str = ""
     donation_consent: bool = field(default=False)
 
 
