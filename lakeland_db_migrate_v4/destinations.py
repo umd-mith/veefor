@@ -75,10 +75,10 @@ class EntityRecord(MigratedRecord):
 
     name: str
     entity_type: str
-    date_of_birth: str
-    date_of_death: str
-    bio_hist: Text
-    legacy_idno_lchp: str
+    date_of_birth: str = ""
+    date_of_death: str = ""
+    bio_hist: Text = ""
+    legacy_idno_lchp: str = ""
     create_landing_page: bool = field(default=False)
     lakeland_video: bool = field(default=False)
     remove: bool = field(default=False)
@@ -99,8 +99,8 @@ class ItemRecord(MigratedRecord):
     title: str
     description: str
     creation_date: str
-    creation_year: int
     item_type: str
+    creation_year: int = field(default_factory=int)
     linked_entities: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_donors: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_sources: list[EntityRecord] = field(default_factory=list)
