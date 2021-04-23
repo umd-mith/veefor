@@ -137,7 +137,7 @@ class LocationRecord(V4BaseRecord):
     """A representation of a Location in the destination data model."""
 
     name: str
-    linked_entities: list[EntityRecord]
+    linked_entities: list[str]
     address: str
     latitude: float
     longitude: float
@@ -148,7 +148,7 @@ class PersonAdminRecord(V4BaseRecord):
     """A representation of AdminData about Entities in the destination data model."""
 
     name: str
-    linked_entities: list[EntityRecord]
+    linked_entities: list[str]
     lchp_team_member: bool = field(default=False)
     title: str = ""
     affiliation: str = ""
@@ -160,8 +160,8 @@ class EntityRelationshipRecord(MigratedRecord):
     """A representation of a pairwise relationship between Entities in the destination data model."""
 
     name: str
-    subject_entity: EntityRecord
-    object_entity: EntityRecord
+    subject_entity: str
+    object_entity: str
     relationship_predicate: str
     relationship_start_date: str = ""
     relationship_end_date: str = ""
