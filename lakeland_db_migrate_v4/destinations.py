@@ -80,8 +80,6 @@ class EntityRecord(MigratedRecord):
     bio_hist: Text = ""
     legacy_idno_lchp: str = ""
     create_landing_page: bool = field(default=False)
-    lakeland_video: bool = field(default=False)
-    remove: bool = field(default=False)
 
 
 @dataclass
