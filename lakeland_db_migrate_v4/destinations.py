@@ -1,7 +1,6 @@
 """Map data to v4 data model."""
 from dataclasses import dataclass, InitVar, field
 from typing import Text, Tuple, Union
-from ulid import ULID
 
 __all__ = [
     "DonationGroupingRecord",
@@ -25,7 +24,7 @@ AIRTABLE_ATTACHMENTS = list[dict[str, Union[str, int, AIRTABLE_ATTACHMENTS_THUMB
 class V4BaseRecord:
     """A shared base class for records in the destination data model."""
 
-    idno: ULID
+    idno: str
 
 
 @dataclass
