@@ -60,7 +60,7 @@ class FileRecord(MigratedRecord):
     """A representation of a File in the destination data model."""
 
     donation_grouping_id: str
-    item_id: str
+    item_id: str = ""  # Not all files have been itemized so could be empty
     created_time: str = field(default="", init=False)
     file_format: str = field(default="", init=False)
     location: str = field(default="", init=False)
