@@ -59,13 +59,13 @@ class DonationGroupingRecord(MigratedRecord):
 class FileRecord(MigratedRecord):
     """A representation of a File in the destination data model."""
 
-    donation_grouping: str
-    item: str
     created_time: str
     file_format: str
     location: str
     sha256_hexdigest: str
     size: int
+    donation_grouping_id: str
+    item_id: str
 
 
 @dataclass
