@@ -236,6 +236,14 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
         # Rename keys we get from Airtable to match what dataclass init expects
         rec = {fieldmap[name]: val for name, val in rec.items() if name in fieldmap}
 
+        # Unwrap singletons
+        for k in rec.keys():
+            if isinstance(rec[k], list):
+                if len(rec[k]) == 1:  # type: ignore[arg-type]
+                    rec[k] = rec[k][0]  # type: ignore[index]
+            else:
+                pass
+
         try:
             valid_input_record: AnyRecord = validator(**rec)
             validated_inputs += (valid_input_record,)
