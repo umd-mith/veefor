@@ -44,7 +44,7 @@ class FileSourceRecord(AirtableSourceRecord):
     part_of_item: str = ""
     virtual_location: str = ""
     file_path: InitVar[str] = ""
-    file_path_array: list[str] = field(init=False)
+    file_path_array: list[str] = field(init=False, default_factory=list)
     linked_entity_as_source: list[str] = field(default_factory=list)
 
     def __post_init__(self, file_path: str) -> None:
