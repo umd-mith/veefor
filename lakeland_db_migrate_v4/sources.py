@@ -42,20 +42,27 @@ class FileSourceRecord(AirtableSourceRecord):
     legacy_checksum: str = ""
     file_format: str = ""
     part_of_item: str = ""
-    virtual_location: str = ""
+    virtual_location: InitVar[str] = ""
     file_path: InitVar[str] = ""
-    file_path_array: list[str] = field(init=False, default_factory=list)
+    locations: list[str] = field(init=False, default_factory=list)
     linked_entity_as_source: list[str] = field(default_factory=list)
 
-    def __post_init__(self, file_path: str) -> None:
+    def __post_init__(self, virtual_location: str, file_path: str) -> None:
         """Handle the case of more than one file path."""
+        all_locations = []
+        if virtual_location is not None and virtual_location != "":
+            all_locations.append(virtual_location)
         if file_path is not None:
             if file_path == "":
-                object.__setattr__(self, "file_path_array", [])
+                object.__setattr__(self, "locations", [])
             if file_path == "NO FILE":
-                object.__setattr__(self, "file_path_array", [])
+                object.__setattr__(self, "locations", [])
             else:
-                object.__setattr__(self, "file_path_array", file_path.split(","))
+                paths = file_path.split(",")
+                if paths != [""]:
+                    for pth in paths:
+                        all_locations.append(pth)
+                object.__setattr__(self, "locations", all_locations)
 
 
 @dataclass(frozen=True)
