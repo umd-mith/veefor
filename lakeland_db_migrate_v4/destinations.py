@@ -74,6 +74,7 @@ class EntityRecord(MigratedRecord):
 
     name: str
     entity_type: str
+    alt_name: str = ""
     date_of_birth: str = ""
     date_of_death: str = ""
     bio_hist: Text = ""
@@ -86,7 +87,7 @@ class SubjectRecord(MigratedRecord):
     """A representation of a Subject in the destination data model."""
 
     name: str
-    type: str
+    subject_type: str
 
 
 @dataclass
@@ -97,6 +98,7 @@ class ItemRecord(MigratedRecord):
     description: str
     creation_date: str
     item_type: str
+    collection: str
     creation_year: int = field(default_factory=int)
     linked_entities: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_donors: list[EntityRecord] = field(default_factory=list)
