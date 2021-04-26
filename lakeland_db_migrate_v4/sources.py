@@ -1,10 +1,18 @@
 """Handle input data coming from Airtable."""
 import json
-import pathlib
+from pathlib import Path
 from collections import defaultdict
-from dataclasses import dataclass, InitVar, field
-from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text
+from dataclasses import InitVar, field
+from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text, Optional, Any
+from pydantic import Field, ValidationError
+from pydantic.dataclasses import dataclass
 
+
+# TYPE HINTING HELPERS
+# Loose type hints for json that comes back from Airtable
+AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
+# Beyond a certain point it's not worth caring how this data is structured
+AIRTABLE_ATTACHMENTS_BLOB = Union[list[dict[str, Any]], dict[str, Any]]
 
 # TODO: Figure out how to move these dataclass declarations
 # to a separate file without mypy losing track of them
@@ -23,13 +31,13 @@ class AccessionSourceRecord(AirtableSourceRecord):
     file_count: int
     donation_date: str
     donor_name: str
-    file_array: list[str]
+    file_array: Union[str, list[str]]
     idno: str
-    linked_entity_array: list[str] = field(default_factory=list)
+    linked_entity_array: Union[str, list[str]] = Field(default_factory=list)
     title: str = ""
     description: Text = ""
     legacy_idno_umd: str = ""
-    _ldt_check: str = ""
+    ldt_check: str = ""
 
 
 @dataclass(frozen=True)
@@ -38,16 +46,16 @@ class FileSourceRecord(AirtableSourceRecord):
 
     idno: str
     linked_accession: str
+    virtual_location: InitVar[Optional[str]] = ""  # type: ignore[assignment]
+    file_path: InitVar[Optional[str]] = ""  # type: ignore[assignment]
     legacy_idno_lchp: str = ""
     legacy_checksum: str = ""
-    file_format: str = ""
+    file_format: Union[str, list[str]] = ""
     part_of_item: str = ""
-    virtual_location: InitVar[str] = ""
-    file_path: InitVar[str] = ""
     locations: list[str] = field(init=False, default_factory=list)
-    linked_entity_as_source: list[str] = field(default_factory=list)
+    linked_entity_as_source: Union[str, list[str]] = Field(default_factory=list)
 
-    def __post_init__(self, virtual_location: str, file_path: str) -> None:
+    def __post_init_post_parse__(self, virtual_location: str, file_path: str) -> None:
         """Handle the case of more than one file path."""
         all_locations = []
         if virtual_location is not None and virtual_location != "":
@@ -60,7 +68,8 @@ class FileSourceRecord(AirtableSourceRecord):
             else:
                 paths = file_path.split(",")
                 if paths != [""]:
-                    for pth in paths:
+                    for pathstring in paths:
+                        pth = Path(pathstring).as_posix()
                         all_locations.append(pth)
                 object.__setattr__(self, "locations", all_locations)
 
@@ -71,27 +80,29 @@ class ItemSourceRecord(AirtableSourceRecord):
 
     idno: str
     legacy_idno_umd: str
-    linked_files_array: list[str]
+    linked_files_array: Union[str, list[str]]
     title: str = ""
     description: str = ""
     created_date: str = ""
     obj_type: str = ""
-    category: str = ""
+    category: Union[str, list[str]] = ""
     collection: str = ""
     lakeland_book_chapter: str = ""
     lakeland_book_page: str = ""
     legacy_idno_lchp: str = ""
-    linked_entity_as_creator: list[str] = field(default_factory=list)
-    linked_entity_source: list[str] = field(default_factory=list)
-    linked_people: list[str] = field(default_factory=list)
-    linked_places_orgs: list[str] = field(default_factory=list)
-    linked_subjects: list[str] = field(default_factory=list)
-    linked_entity_interviewers: list[str] = field(default_factory=list)
-    linked_entity_interviewees: list[str] = field(default_factory=list)
-    interview_summary_attachment: list[str] = field(default_factory=list)
+    linked_entity_as_creator: Union[str, list[str]] = Field(default_factory=list)
+    linked_entity_source: Union[str, list[str]] = Field(default_factory=list)
+    linked_people: Union[str, list[str]] = Field(default_factory=list)
+    linked_places_orgs: Union[str, list[str]] = Field(default_factory=list)
+    linked_subjects: Union[str, list[str]] = Field(default_factory=list)
+    linked_entity_interviewers: Union[str, list[str]] = Field(default_factory=list)
+    linked_entity_interviewees: Union[str, list[str]] = Field(default_factory=list)
+    interview_summary_attachment: AIRTABLE_ATTACHMENTS_BLOB = Field(
+        default_factory=list
+    )
     lakeland_book: bool = field(default=False)
     lakeland_video: bool = field(default=False)
-    remove: bool = field(default=False)
+    remove: str = ""
 
 
 @dataclass(frozen=True)
@@ -99,16 +110,16 @@ class EntitySourceRecord(AirtableSourceRecord):
     """A record from the Entities table in the *source* base."""
 
     name: str
-    linked_items_array: list[str] = field(default_factory=list)
-    linked_as_source: list[str] = field(default_factory=list)
-    linked_as_interviewer: list[str] = field(default_factory=list)
-    linked_as_interviewee: list[str] = field(default_factory=list)
-    linked_place_as_subject: list[str] = field(default_factory=list)
-    linked_to_item_as_creator: list[str] = field(default_factory=list)
-    linked_to_files_as_source: list[str] = field(default_factory=list)
-    linked_to_acc_as_donor: list[str] = field(default_factory=list)
-    auth_relations: list[str] = field(default_factory=list)
-    auth_relations_2: list[str] = field(default_factory=list)
+    linked_items_array: Union[str, list[str]] = Field(default_factory=list)
+    linked_as_source: Union[str, list[str]] = Field(default_factory=list)
+    linked_as_interviewer: Union[str, list[str]] = Field(default_factory=list)
+    linked_as_interviewee: Union[str, list[str]] = Field(default_factory=list)
+    linked_place_as_subject: Union[str, list[str]] = Field(default_factory=list)
+    linked_to_item_as_creator: Union[str, list[str]] = Field(default_factory=list)
+    linked_to_files_as_source: Union[str, list[str]] = Field(default_factory=list)
+    linked_to_acc_as_donor: Union[str, list[str]] = Field(default_factory=list)
+    auth_relations: Union[str, list[str]] = Field(default_factory=list)
+    auth_relations_2: Union[str, list[str]] = Field(default_factory=list)
     address: str = ""
     latitude: str = ""
     longitude: str = ""
@@ -124,7 +135,7 @@ class SubjectSourceRecord(AirtableSourceRecord):
     """A record from the Subjects table in the *source* base."""
 
     name: str
-    linked_items_array: list[str]
+    linked_items_array: Union[str, list[str]]
     category: str = ""
 
 
@@ -141,10 +152,6 @@ class EntityRelationshipSourceRecord(AirtableSourceRecord):
     notes: str = ""
 
 
-# TYPE HINTING STUFF
-# A pretty loose type hint for json that comes back from Airtable
-AIRTABLE_JSON = dict[str, Union[str, int, list[str]]]
-
 AnyRecord = TypeVar(
     "AnyRecord",
     AccessionSourceRecord,
@@ -155,7 +162,6 @@ AnyRecord = TypeVar(
     EntityRelationshipSourceRecord,
 )
 
-
 # LIBRARY FUNCTIONS
 def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
     """
@@ -164,13 +170,13 @@ def load_from_file(fname: str) -> Tuple[list[AIRTABLE_JSON], Tuple[str, ...]]:
     :param fname: A string representing the name of the file to load
     :return: A list of dictionaries representing the json data
     """
-    V4_SOURCE_DATA_DIR: Final = pathlib.Path().cwd() / "source_data"
+    V4_SOURCE_DATA_DIR: Final = Path().cwd() / "source_data"
 
-    target_file: pathlib.Path = pathlib.Path.joinpath(V4_SOURCE_DATA_DIR, fname)
+    target_file: Path = Path.joinpath(V4_SOURCE_DATA_DIR, fname)
     target_data: list[AIRTABLE_JSON] = []
 
     try:
-        with pathlib.Path.open(target_file, "r") as fobject:
+        with Path.open(target_file, "r") as fobject:
             target_data = json.loads(fobject.read())
     except FileNotFoundError as err:
         print(err)
@@ -252,8 +258,10 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
                 pass
 
         try:
-            valid_input_record: AnyRecord = validator(**rec)
+            valid_input_record: AirtableSourceRecord = validator(**rec)
             validated_inputs += (valid_input_record,)
+        except ValidationError as err:
+            print(err)
         except TypeError as e:
             hint: str = ""
             cls_name = validator.__name__

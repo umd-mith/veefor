@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "lakeland-db-migrate-v4"
-version = "0.5.2"
+version = "0.6.0"
 description = "Scripts for migrating data associated with the Lakeland Digital Archive project"
 authors = ["Trevor Muñoz <tmunoz@umd.edu>"]
 license = "GPLv3"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-ulid-py = "^1.1.0"
+pydantic = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

@@ -9,7 +9,7 @@ accessions_source_column_mappings: dict[str, str] = {
     "Files": "file_array",
     "Donation Grouping Title": "title",
     "# Files": "file_count",
-    "LDT Check (Temp)": "_ldt_check",
+    "LDT Check (Temp)": "ldt_check",
     "airtable_createdTime": "airtable_created_time",
     "airtable_id": "airtable_idno",
 }
