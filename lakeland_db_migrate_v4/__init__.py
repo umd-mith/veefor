@@ -3,4 +3,4 @@ import lakeland_db_migrate_v4.source_mappings
 from .sources import validate_inputs
 from .destinations import *
 
-__version__ = "0.4.1"
+__version__ = "0.5.2"
