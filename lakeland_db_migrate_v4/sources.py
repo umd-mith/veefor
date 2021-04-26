@@ -258,7 +258,7 @@ def validate_inputs(fname: str, fieldmap: dict[str, str]) -> Tuple[AnyRecord, ..
                 pass
 
         try:
-            valid_input_record: AirtableSourceRecord = validator(**rec)
+            valid_input_record: AirtableSourceRecord = validator(**rec)  # type: ignore[call-arg]
             validated_inputs += (valid_input_record,)
         except ValidationError as err:
             print(err)
