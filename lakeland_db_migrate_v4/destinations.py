@@ -33,13 +33,8 @@ class V4BaseRecord:
 class MigratedRecord(V4BaseRecord):
     """A shared base class for records in the destination data model."""
 
-    airtable_created_time: InitVar[str]
-    airtable_idno: InitVar[str]
-    source_record_hash: int = field(init=False, repr=False)
-
-    def __post_init__(self, airtable_idno: str, airtable_created_time: str) -> None:
-        """Create a hash of id, created time for source record."""
-        self.source_record_hash = hash((airtable_idno, airtable_created_time))
+    v3_airtable_created_time: str
+    v3_airtable_idno: str
 
 
 @dataclass
