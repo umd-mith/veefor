@@ -1,6 +1,8 @@
 """Map data to v4 data model."""
-from dataclasses import dataclass, InitVar, field
+from dataclasses import InitVar, field
 from typing import Text, Tuple, Union
+from pydantic import Field
+from pydantic.dataclasses import dataclass
 
 __all__ = [
     "DonationGroupingRecord",
@@ -49,7 +51,7 @@ class DonationGroupingRecord(MigratedRecord):
     donor_email: str
     donor_phone: str
     description: Text
-    _v3_files_array: list[str] = field(repr=False, hash=False)
+    v3_files_array: Union[str, list[str]] = field(repr=False, hash=False)
     title: str = ""
     legacy_idno: str = ""
     donation_consent: bool = field(default=False)
@@ -97,7 +99,7 @@ class ItemRecord(MigratedRecord):
     title: str
     description: str
     creation_date: str
-    item_type: str
+    item_type: Union[str, list[str]]
     collection: str
     creation_year: int = field(default_factory=int)
     linked_entities: list[EntityRecord] = field(default_factory=list)
