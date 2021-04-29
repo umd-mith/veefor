@@ -6,6 +6,7 @@ from dataclasses import InitVar, field
 from typing import Final, Union, TypeVar, Tuple, DefaultDict, Text, Optional, Any
 from pydantic import Field, ValidationError
 from pydantic.dataclasses import dataclass
+from .utils import handle_paths
 
 
 # TYPE HINTING HELPERS
@@ -58,6 +59,7 @@ class FileSourceRecord(AirtableSourceRecord):
     def __post_init_post_parse__(self, virtual_location: str, file_path: str) -> None:
         """Handle the case of more than one file path."""
         all_locations = []
+
         if virtual_location is not None and virtual_location != "":
             all_locations.append(virtual_location)
         if file_path is not None:
@@ -66,11 +68,9 @@ class FileSourceRecord(AirtableSourceRecord):
             if file_path == "NO FILE":
                 object.__setattr__(self, "locations", [])
             else:
-                paths = file_path.split(",")
-                if paths != [""]:
-                    for pathstring in paths:
-                        pth = Path(pathstring).as_posix()
-                        all_locations.append(pth)
+                paths = file_path.split('","')
+                normed_paths = handle_paths(paths)
+                all_locations.extend(normed_paths)
                 object.__setattr__(self, "locations", all_locations)
 
 

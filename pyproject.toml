@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lakeland-db-migrate-v4"
-version = "0.6.3"
+version = "0.6.5"
 description = "Scripts for migrating data associated with the Lakeland Digital Archive project"
 authors = ["Trevor Muñoz <tmunoz@umd.edu>"]
 license = "GPLv3"
