@@ -48,21 +48,3 @@ def handle_paths(pathstrings: list[str]) -> list[str]:
                 # 9 files have paths we can't do anything with
                 pass
     return [n.as_posix() for n in normed]
-
-    # if paths != [""]:
-    #     for pathstring in paths:
-    #         if urlregex.match(pathstring):
-    #             all_locations.append(pathstring)
-    #         else:
-    #             if pathstring.startswith("/"):
-    #                 pathstring = pathstring[1:]
-
-    #             pth = Path(pathstring)
-    #             if pth.parts[0] in nas_2021_accessions:
-    #                 normed_path = (
-    #                     Path(
-    #                         "Projects/lakeland-digital-archive/object files/LCHP Accession 2021"
-    #                     )
-    #                     / pth
-    #                 )
-    #             all_locations.append(pth.as_posix())
