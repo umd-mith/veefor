@@ -1,6 +1,8 @@
 """Helper function to deal with the mess of NAS paths."""
 import re
+from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 root_mapping: dict[str, str] = {
     "Assorted Jump Drives": "Projects/lakeland-digital-archive/object files/LCHP Accession 2021",
@@ -48,3 +50,15 @@ def handle_paths(pathstrings: list[str]) -> list[str]:
                 # 9 files have paths we can't do anything with
                 pass
     return [n.as_posix() for n in normed]
+
+
+def derive_date(datestring: str) -> Optional[datetime]:
+    """Take the string we receive from Airtable and try to get a date from it."""
+    if not datestring == "":
+        try:
+            dt = datetime.fromisoformat(datestring)
+            return dt
+        except ValueError as err:
+            raise RuntimeError("Couldn't handle date: {}".format(err))
+    else:
+        return None

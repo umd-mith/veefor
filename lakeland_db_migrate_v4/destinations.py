@@ -3,6 +3,7 @@ from dataclasses import InitVar, field
 from typing import Text, Tuple, Union
 from pydantic import Field
 from pydantic.dataclasses import dataclass
+from .utils import derive_date
 
 __all__ = [
     "DonationGroupingRecord",
@@ -93,10 +94,11 @@ class ItemRecord(MigratedRecord):
 
     title: str
     description: str
-    creation_date: str
+    v3_created_date: InitVar[str]
     item_type: Union[str, list[str]]
     collection: str
-    creation_year: int = field(default_factory=int)
+    created_date: str = Field(init=False, default="")
+    creation_year: str = Field(init=False, default="")
     linked_entities: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_donors: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_sources: list[EntityRecord] = field(default_factory=list)
@@ -106,6 +108,13 @@ class ItemRecord(MigratedRecord):
     duration: str = ""
     interview_summary_attachment: AIRTABLE_ATTACHMENTS = field(default_factory=list)
     interview_transcript_attachment: AIRTABLE_ATTACHMENTS = field(default_factory=list)
+
+    def __post_init_post_parse__(self, v3_created_date: str) -> None:
+        """Deal with date information."""
+        dtobj = derive_date(v3_created_date)
+        if dtobj is not None:
+            object.__setattr__(self, "created_date", dtobj.strftime("%Y-%m-%d"))
+            object.__setattr__(self, "creation_year", dtobj.strftime("%Y"))
 
 
 @dataclass
