@@ -9,6 +9,8 @@ This project contains bits and pieces to help migrate data to v4 of the LDA sche
 3. In a virtual environment of your choice: `pip install path/to/dist/gzip`
 4. Do what you're gonna do
 
+For an example of using these tools, see [this gist](https://gist.github.com/trevormunoz/8d4f5f1942392bd91c626cbb6b7decdd).
+
 ## How to develop on this project
 
 Set up requires [poetry](https://python-poetry.org/) for now
