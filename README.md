@@ -1,6 +1,6 @@
 # Lakeland Digital Archive (LDA) database migration tools
 
-This project contains scripts to migrate data to v4 of the LDA schema. The code here builds on ideas from [lakeland-data-munging](https://github.com/umd-mith/lakeland-data-munging)
+This project contains bits and pieces to help migrate data to v4 of the LDA schema. The code here builds on ideas from [lakeland-data-munging](https://github.com/umd-mith/lakeland-data-munging)
 
 ## How to use
 
