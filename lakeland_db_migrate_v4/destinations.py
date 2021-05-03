@@ -119,51 +119,6 @@ class ItemRecord(MigratedRecord):
 
 
 @dataclass
-class ItemLegacyInfoRecord(V4BaseRecord):
-    """A representation of legacy ids about Entities in the destination data model."""
-
-    linked_item: ItemRecord
-    legacy_idno_umd: str = ""
-    legacy_ldt_image_idno: str = ""
-    legacy_associated_filenames: list[str] = field(default_factory=list)
-
-
-@dataclass
-class ItemAdminRecord(V4BaseRecord):
-    """A representation of AdminData about Entities in the destination data model."""
-
-    linked_item: ItemRecord
-    lakeland_book: bool = field(default=False)
-    lakeland_book_chapter: str = ""
-    lakeland_book_page: int = field(default_factory=int)
-    lakeland_video: bool = field(default=False)
-    remove: bool = field(default=False)
-
-
-@dataclass
-class LocationRecord(V4BaseRecord):
-    """A representation of a Location in the destination data model."""
-
-    name: str
-    linked_entities: list[str]
-    address: str
-    latitude: float
-    longitude: float
-
-
-@dataclass
-class PersonAdminRecord(V4BaseRecord):
-    """A representation of AdminData about Entities in the destination data model."""
-
-    name: str
-    linked_entities: list[str]
-    lchp_team_member: bool = field(default=False)
-    title: str = ""
-    affiliation: str = ""
-    email_address: str = ""
-
-
-@dataclass
 class EntityRelationshipRecord(MigratedRecord):
     """A representation of a pairwise relationship between Entities in the destination data model."""
 
