@@ -86,6 +86,7 @@ class SubjectRecord(MigratedRecord):
 
     name: str
     subject_type: str
+    linked_items: list[str] = Field(default_factory=list)
 
 
 @dataclass
@@ -95,8 +96,8 @@ class ItemRecord(MigratedRecord):
     title: str
     description: str
     v3_created_date: InitVar[str]
-    item_type: Union[str, list[str]]
     collection: str
+    item_type: Union[str, list[str]]
     created_date: str = Field(init=False, default="")
     creation_year: str = Field(init=False, default="")
     linked_entities: list[EntityRecord] = field(default_factory=list)
