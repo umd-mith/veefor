@@ -98,6 +98,7 @@ class ItemRecord(MigratedRecord):
     creation_year: str = Field(init=False, default="")
     linked_entities: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_donors: list[EntityRecord] = field(default_factory=list)
+    linked_entities_as_creators: list[str] = Field(default_factory=list)
     linked_entities_as_sources: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_interviewers: list[EntityRecord] = field(default_factory=list)
     linked_entities_as_interviewees: list[EntityRecord] = field(default_factory=list)
