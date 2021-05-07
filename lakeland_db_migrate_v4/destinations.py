@@ -9,12 +9,8 @@ __all__ = [
     "DonationGroupingRecord",
     "FileRecord",
     "ItemRecord",
-    "ItemLegacyInfoRecord",
-    "ItemAdminRecord",
     "SubjectRecord",
     "EntityRecord",
-    "LocationRecord",
-    "PersonAdminRecord",
     "EntityRelationshipRecord",
 ]
 
